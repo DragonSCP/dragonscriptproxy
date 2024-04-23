@@ -36,7 +36,7 @@ def test_proxy(ip, port):
         return False, None
 
 def fetch_payload_data():
-    url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/payload_config.py"
+    url = "https://github.com/DragonSCP/dragonscriptproxy/blob/main/payload_config.py"
     try:
         response = requests.get(url)
         if response.status_code == 200:
