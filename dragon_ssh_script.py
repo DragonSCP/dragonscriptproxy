@@ -4,6 +4,7 @@ import sys
 import requests
 import warnings
 import time
+import hashlib
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import json  # Para processamento de JSON
 
@@ -11,21 +12,15 @@ import json  # Para processamento de JSON
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
 # Versão atual da script
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
 def clear_screen():
-    if os.name == 'nt':
-        os.system('cls')
-    else:
-        os.system('clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def test_proxy(ip, port):
     proxy_url = f"http://{ip}:{port}" if port in [80, 8080] else f"https://{ip}:{port}"
-    proxy_dict = {
-        'http': proxy_url,
-        'https': proxy_url
-    }
+    proxy_dict = {'http': proxy_url, 'https': proxy_url}
     try:
         response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
         external_ip = response.text.strip()
@@ -74,6 +69,16 @@ def generate_payloads():
         print(f"Payload {i}\n{payload}\n")
 
     input("Pressione Enter para continuar...")
+    clear_screen()
+
+def update_script():
+    script_url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/dragon_ssh_script.py"
+    local_script_path = "dragon_ssh_script.py"
+    remote_script_content = requests.get(script_url).text
+    with open(local_script_path, 'w') as file:
+        file.write(remote_script_content)
+    print("Script atualizado com sucesso. Reiniciando...")
+    os.execv(sys.executable, ['python'] + sys.argv)
 
 def main():
     clear_screen()
@@ -84,31 +89,27 @@ def main():
         print("3 - Testar Proxy Individual")
         print("4 - Gerar e Testar Proxies por Operadora e IP")
         print("5 - Verificar Atualizações")
-        print("0 - Sair")
-        choice = input("Escolha uma opção: ")
+        choice = input("Escolha uma opção ou pressione Enter para sair: ")
 
-        if choice == '1':
-            # Aqui você colocaria a lógica para Gerar e Testar Proxies a partir de um IP Base
+        if choice == '':
+            break
+        elif choice == '1':
+            # Lógica para Gerar e Testar Proxies a partir de um IP Base
             pass
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
-            # Aqui você colocaria a lógica para Testar Proxy Individual
+            # Lógica para Testar Proxy Individual
             pass
         elif choice == '4':
-            # Aqui você colocaria a lógica para Gerar e Testar Proxies por Operadora e IP
+            # Lógica para Gerar e Testar Proxies por Operadora e IP
             pass
         elif choice == '5':
-            # Aqui você colocaria a lógica para Verificar Atualizações
-            pass
-        elif choice == '0':
-            print("Saindo...")
-            break
+            update_script()
         else:
             print("Opção inválida. Por favor, tente novamente.")
             time.sleep(2)
-            clear_screen()
+        clear_screen()
 
 if __name__ == "__main__":
     main()
-
