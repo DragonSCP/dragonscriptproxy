@@ -8,10 +8,10 @@ import hashlib
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import json  # Para processamento de JSON
 
-# Ignorar avisos de certificados não verificados
+# Ignorar avisos de certificados nÃ£o verificados
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
-# Versão atualizada da script
+# VersÃ£o atualizada da script
 __version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
@@ -49,13 +49,13 @@ def fetch_payload_data():
 def generate_payloads():
     fetch_payload_data()
     if not payload_data:
-        print("Dados de payload não carregados. Abortando geração de payloads.")
+        print("Dados de payload nÃ£o carregados. Abortando geraÃ§Ã£o de payloads.")
         return
 
     try:
         num_payloads = int(input("Quantas payloads deseja gerar? "))
     except ValueError:
-        print("Entrada inválida, por favor insira um número inteiro.")
+        print("Entrada invÃ¡lida, por favor insira um nÃºmero inteiro.")
         return
 
     methods = payload_data.get('methods', [])
@@ -108,36 +108,6 @@ def test_individual_proxy():
     input("Pressione Enter para continuar...")
     clear_screen()
 
-def test_proxies_by_operator_and_ip():
-    operator = input("Insira o nome da operadora para gerar proxies: ")
-    base_ip = input("Insira o IP base para geração: ")
-    # Suposição: geração de IPs baseados em algum algoritmo ou range específico
-    generated_ips = [f"{base_ip[:-1]}{i}" for i in range(1, 11)]  # Gera IPs com base em base_ip
-    ports = [80, 8080, 443]
-
-    print(f"Testando proxies para a operadora {operator}, por favor aguarde...")
-    proxy_results = {}
-
-    for ip in generated_ips:
-        successful_ports = []
-        for port in ports:
-            result, external_ip = test_proxy(ip, port)
-            if result:
-                if port not in successful_ports:
-                    successful_ports.append(port)
-        if successful_ports:
-            proxy_results[ip] = {'external_ip': external_ip, 'ports': sorted(successful_ports)}
-
-    if proxy_results:
-        print(f"\nProxies que funcionaram para a operadora {operator}:")
-        for ip, details in proxy_results.items():
-            print(f"{ip}\nIP Externo: {details['external_ip']}\nPortas que pegaram: {', '.join(map(str, details['ports']))}")
-    else:
-        print(f"\nNenhum proxy funcionou para a operadora {operator}. Tente outros IPs.")
-
-    input("Pressione Enter para continuar...")
-    clear_screen()
-
 def main():
     clear_screen()
     while True:
@@ -146,24 +116,25 @@ def main():
         print("2 - Gerar Payloads")
         print("3 - Testar Proxy Individual")
         print("4 - Gerar e Testar Proxies por Operadora e IP")
-        print("5 - Verificar Atualizações")
-        choice = input("Escolha uma opção ou pressione Enter para sair: ")
+        print("5 - Verificar AtualizaÃ§Ãµes")
+        choice = input("Escolha uma opÃ§Ã£o ou pressione Enter para sair: ")
 
         if choice == '':
             break
         elif choice == '1':
-            # Lógica para Gerar e Testar Proxies a partir de um IP Base
+            # LÃ³gica para Gerar e Testar Proxies a partir de um IP Base
             pass
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
             test_individual_proxy()
         elif choice == '4':
-            test_proxies_by_operator_and_ip()
+            # LÃ³gica para Gerar e Testar Proxies por Operadora e IP
+            pass
         elif choice == '5':
             update_script()
         else:
-            print("Opção inválida. Por favor, tente novamente.")
+            print("OpÃ§Ã£o invÃ¡lida. Por favor, tente novamente.")
             time.sleep(2)
         clear_screen()
 
