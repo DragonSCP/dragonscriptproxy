@@ -90,11 +90,10 @@ def test_individual_proxy():
         for port in ports:
             result, external_ip = test_proxy(ip, port)
             if result:
-                successful_ports.append(port)
-                if ip not in proxy_results:
-                    proxy_results[ip] = {'external_ip': external_ip, 'ports': successful_ports}
-                else:
-                    proxy_results[ip]['ports'].extend(successful_ports)
+                if port not in successful_ports:
+                    successful_ports.append(port)
+        if successful_ports:
+            proxy_results[ip] = {'external_ip': external_ip, 'ports': sorted(successful_ports)}
 
     if proxy_results:
         print("\nProxies que funcionaram:")
