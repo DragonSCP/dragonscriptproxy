@@ -75,7 +75,7 @@ def generate_and_test_proxies_from_base_ip():
     end_port = int(input("Digite a porta final: "))
 
     for port in range(start_port, end_port + 1):
-        ip = f"{base_ip}{port % 256}"
+        ip = f"{base_ip}{port % 256}" if base_ip.endswith('.') else f"{base_ip}.{port % 256}"
         print(f"Testando {ip}:{port}...")
         _, external_ip = test_proxy(ip, port)
         if external_ip:
@@ -149,4 +149,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
