@@ -6,7 +6,8 @@ import warnings
 import time
 from subprocess import call
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-import json  # Adicionado para processamento seguro de JSON
+import json
+import shutil  # Adicionado para suportar operações de remoção do diretório
 
 # Ignorar avisos de certificados não verificados
 warnings.simplefilter('ignore', InsecureRequestWarning)
@@ -76,16 +77,24 @@ def check_for_updates():
         print(".", end="", flush=True)
     print()
 
-    fetch_payload_data()  # Atualizar dados de payload durante a verificação de atualizações
+    local_repo_path = os.path.dirname(os.path.abspath(__file__))
+    repo_url = "https://github.com/DragonSCP/dragonscriptproxy.git"
+
     try:
-        local_repo_path = os.path.dirname(os.path.abspath(__file__))
-        result = call(["git", "-C", local_repo_path, "pull", "origin", "master"])
+        # Removendo a script atual completamente
+        base_path = os.path.dirname(local_repo_path)  # Obtém o diretório pai
+        if os.path.exists(local_repo_path):
+            shutil.rmtree(local_repo_path)
+            print("\nScript atual removida com sucesso.")
+
+        # Reinstalando a versão mais recente do repositório
+        result = call(["git", "clone", repo_url, local_repo_path])
         if result == 0:
-            print("\nAtualização realizada com sucesso. Por favor, reinicie o script.")
+            print("\nScript reinstalada com sucesso. Por favor, reinicie o script.")
         else:
-            print("\nA script já está atualizada ou ocorreu um erro.")
+            print("\nErro ao reinstalar a script.")
     except Exception as e:
-        print(f"Erro ao atualizar: {e}")
+        print(f"\nErro ao atualizar: {e}")
 
 def show_version():
     print(f"Versão da script: {__version__}")
@@ -133,4 +142,3 @@ def main_menu():
 
 if __name__ == '__main__':
     main_menu()
-
