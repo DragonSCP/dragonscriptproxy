@@ -23,8 +23,11 @@ def test_proxy(ip, port):
     proxy_dict = {'http': proxy_url, 'https': proxy_url}
     try:
         response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
-        external_ip = response.text.strip()
-        return True, external_ip
+        if response.status_code == 200:
+            external_ip = response.text.strip()
+            return True, external_ip
+        else:
+            return False, None
     except requests.exceptions.RequestException:
         return False, None
 
