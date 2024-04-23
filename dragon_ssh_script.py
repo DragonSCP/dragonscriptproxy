@@ -11,7 +11,7 @@ import json  # Para processamento de JSON
 # Ignorar avisos de certificados não verificados
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
-# Versão atual da script
+# Versão atualizada da script
 __version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
@@ -24,9 +24,9 @@ def test_proxy(ip, port):
     try:
         response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
         external_ip = response.text.strip()
-        return True, f"{ip}:{port} - IP Externo: {external_ip}"
+        return True, external_ip
     except requests.exceptions.RequestException:
-        return False, f"{ip}:{port} - Falha na conexão"
+        return False, None
 
 def fetch_payload_data():
     url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/payload_config.json"
@@ -82,19 +82,24 @@ def test_individual_proxy():
     input_proxies = input("Insira os IPs dos proxies separados por '#': ")
     proxies = input_proxies.split('#')
     ports = [80, 8080, 443]
-    working_proxies = []
+    proxy_results = {}
 
     print("Testando proxies, por favor aguarde...")
     for ip in proxies:
+        successful_ports = []
         for port in ports:
-            result, message = test_proxy(ip, port)
+            result, external_ip = test_proxy(ip, port)
             if result:
-                working_proxies.append(message)
+                successful_ports.append(port)
+                if ip not in proxy_results:
+                    proxy_results[ip] = {'external_ip': external_ip, 'ports': successful_ports}
+                else:
+                    proxy_results[ip]['ports'].extend(successful_ports)
 
-    if working_proxies:
+    if proxy_results:
         print("\nProxies que funcionaram:")
-        for proxy in working_proxies:
-            print(proxy)
+        for ip, details in proxy_results.items():
+            print(f"{ip}\nIP Externo: {details['external_ip']}\nPortas que pegaram: {', '.join(map(str, details['ports']))}")
     else:
         print("\nNenhum proxy funcionou. Tente outros IPs.")
 
