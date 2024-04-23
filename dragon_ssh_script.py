@@ -8,10 +8,10 @@ import hashlib
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import json  # Para processamento de JSON
 
-# Ignorar avisos de certificados nÃ£o verificados
+# Ignorar avisos de certificados não verificados
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
-# VersÃ£o atualizada da script
+# Versão atualizada da script
 __version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
@@ -49,13 +49,13 @@ def fetch_payload_data():
 def generate_payloads():
     fetch_payload_data()
     if not payload_data:
-        print("Dados de payload nÃ£o carregados. Abortando geraÃ§Ã£o de payloads.")
+        print("Dados de payload não carregados. Abortando geração de payloads.")
         return
 
     try:
         num_payloads = int(input("Quantas payloads deseja gerar? "))
     except ValueError:
-        print("Entrada invÃ¡lida, por favor insira um nÃºmero inteiro.")
+        print("Entrada inválida, por favor insira um número inteiro.")
         return
 
     methods = payload_data.get('methods', [])
@@ -116,25 +116,25 @@ def main():
         print("2 - Gerar Payloads")
         print("3 - Testar Proxy Individual")
         print("4 - Gerar e Testar Proxies por Operadora e IP")
-        print("5 - Verificar AtualizaÃ§Ãµes")
-        choice = input("Escolha uma opÃ§Ã£o ou pressione Enter para sair: ")
+        print("5 - Verificar Atualizações")
+        choice = input("Escolha uma opção ou pressione Enter para sair: ")
 
         if choice == '':
             break
         elif choice == '1':
-            # LÃ³gica para Gerar e Testar Proxies a partir de um IP Base
+            # Lógica para Gerar e Testar Proxies a partir de um IP Base
             pass
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
             test_individual_proxy()
         elif choice == '4':
-            # LÃ³gica para Gerar e Testar Proxies por Operadora e IP
+            # Lógica para Gerar e Testar Proxies por Operadora e IP
             pass
         elif choice == '5':
             update_script()
         else:
-            print("OpÃ§Ã£o invÃ¡lida. Por favor, tente novamente.")
+            print("Opção inválida. Por favor, tente novamente.")
             time.sleep(2)
         clear_screen()
 
