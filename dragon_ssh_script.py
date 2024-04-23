@@ -14,6 +14,7 @@ warnings.simplefilter('ignore', InsecureRequestWarning)
 # Versão atualizada da script
 __version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
+operator_ips = {}  # Dicionário para armazenar IPs de operadoras
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -45,6 +46,21 @@ def fetch_payload_data():
         print(f"Erro ao decodificar JSON: {e}")
     except Exception as e:
         print(f"Erro ao buscar dados de payload: {e}")
+
+def fetch_operator_ips():
+    url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/IPs_Operadoras.json"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            global operator_ips
+            operator_ips = json.loads(response.text)
+            print("Dados das operadoras atualizados com sucesso.")
+        else:
+            print("Falha ao atualizar dados das operadoras, status code:", response.status_code)
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar JSON: {e}")
+    except Exception as e:
+        print(f"Erro ao buscar dados das operadoras: {e}")
 
 def generate_payloads():
     fetch_payload_data()
@@ -129,7 +145,8 @@ def main():
         elif choice == '3':
             test_individual_proxy()
         elif choice == '4':
-            # Lógica para Gerar e Testar Proxies por Operadora e IP
+            fetch_operator_ips()  # Nova funcionalidade para carregar IPs por operadora
+            # Lógica adicional para teste de proxies por operadora
             pass
         elif choice == '5':
             update_script()
