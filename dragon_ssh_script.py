@@ -12,7 +12,7 @@ import json  # Para processamento de JSON
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
 # Versão atual da script
-__version__ = "1.3.0"
+__version__ = "1.2.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
 def clear_screen():
@@ -24,11 +24,9 @@ def test_proxy(ip, port):
     try:
         response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
         external_ip = response.text.strip()
-        print(f"Proxy {ip}:{port} - IP Externo: {external_ip}")
-        return True, external_ip
-    except requests.exceptions.RequestException as e:
-        print(f"Proxy {ip}:{port} - Falha na conexão: {e}")
-        return False, None
+        return True, f"{ip}:{port} - IP Externo: {external_ip}"
+    except requests.exceptions.RequestException:
+        return False, f"{ip}:{port} - Falha na conexão"
 
 def fetch_payload_data():
     url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/payload_config.json"
@@ -80,6 +78,29 @@ def update_script():
     print("Script atualizado com sucesso. Reiniciando...")
     os.execv(sys.executable, ['python'] + sys.argv)
 
+def test_individual_proxy():
+    input_proxies = input("Insira os IPs dos proxies separados por '#': ")
+    proxies = input_proxies.split('#')
+    ports = [80, 8080, 443]
+    working_proxies = []
+
+    print("Testando proxies, por favor aguarde...")
+    for ip in proxies:
+        for port in ports:
+            result, message = test_proxy(ip, port)
+            if result:
+                working_proxies.append(message)
+
+    if working_proxies:
+        print("\nProxies que funcionaram:")
+        for proxy in working_proxies:
+            print(proxy)
+    else:
+        print("\nNenhum proxy funcionou. Tente outros IPs.")
+
+    input("Pressione Enter para continuar...")
+    clear_screen()
+
 def main():
     clear_screen()
     while True:
@@ -99,8 +120,7 @@ def main():
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
-            # Lógica para Testar Proxy Individual
-            pass
+            test_individual_proxy()
         elif choice == '4':
             # Lógica para Gerar e Testar Proxies por Operadora e IP
             pass
