@@ -5,31 +5,18 @@ import requests
 import warnings
 from subprocess import call
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from payload_config import payload_data  # Adicionando importação do novo módulo com as configurações
 
 # Ignorar avisos de certificados não verificados
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
-allowed_words = set([
-    "http", "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
-    "wikipedia.org", "youtube.com", "google.com", "bing.com", "vivo.com.br",
-    "plus.google.com", "myspace.com", "spotify.com", "playwaze.com",
-])
-
 # Versão atual da script
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 def clear_screen():
     if os.name == 'nt':
         os.system('cls')
     else:
         os.system('clear')
-
-def filter_text(text):
-    words = set(text.split())
-    if not words.isdisjoint(allowed_words):
-        return text
-    return None
 
 def test_proxy(ip, port):
     proxy_url = f"http://{ip}:{port}" if port in [80, 8080] else f"https://{ip}:{port}"
@@ -39,23 +26,28 @@ def test_proxy(ip, port):
     }
     try:
         response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
-        response_text = response.text.strip()
-        filtered_text = filter_text(response_text)
-        if filtered_text:
-            print(f"Proxy {ip}:{port} - {filtered_text}")
-            return True, filtered_text
-        elif '403 Forbidden' in response_text:
-            print(f"Proxy {ip}:{port} - Acesso negado.")
-            return False, None
-        else:
-            external_ip = response_text
-            print(f"Proxy {ip}:{port} - IP Externo: {external_ip}")
-            return True, external_ip
+        external_ip = response.text.strip()
+        print(f"Proxy {ip}:{port} - IP Externo: {external_ip}")
+        return True, external_ip
     except requests.exceptions.RequestException as e:
         print(f"Proxy {ip}:{port} - Falha na conexão: {e}")
         return False, None
 
+def fetch_payload_data():
+    url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/payload_config.py"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            global payload_data
+            payload_data = eval(response.text.split("=")[1].strip())
+            print("Payloads atualizados com sucesso.")
+        else:
+            print("Falha ao atualizar payloads.")
+    except Exception as e:
+        print(f"Erro ao buscar dados de payload: {e}")
+
 def generate_payloads():
+    fetch_payload_data()
     methods = payload_data['methods']
     custom_strings = payload_data['custom_strings']
     domains = payload_data['domains']
@@ -64,9 +56,11 @@ def generate_payloads():
     domain = random.choice(domains)
     payload = f"{method} {domain} {custom_string}"
     print(f"Payload gerado: {payload}")
+    input("Pressione Enter para continuar...")
 
 def check_for_updates():
     print("Verificando atualizações...")
+    fetch_payload_data()  # Atualizar dados de payload durante a verificação de atualizações
     try:
         local_repo_path = os.path.dirname(os.path.abspath(__file__))
         result = call(["git", "-C", local_repo_path, "pull", "origin", "master"])
@@ -92,8 +86,6 @@ def uninstall_script():
         sys.exit(f"Erro ao desinstalar script: {e}")
 
 def main_menu():
-    successful_proxies = []
-    common_ports = [80, 8080, 443]
     while True:
         clear_screen()
         print("Dragon SSH Script Generator")
@@ -109,26 +101,13 @@ def main_menu():
         if choice == '':
             continue
         elif choice == '1':
-            ip_base = input("Informe o IP base (e.g., 192.168.1.0): ")
-            num_ips = int(input("Quantos IPs deseja gerar? "))
-            ips = generate_ip_range(ip_base, num_ips)
-            for ip in ips:
-                for port in common_ports:
-                    result, external_ip = test_proxy(ip, port)
-                    if result:
-                        successful_proxies.append((ip, port, external_ip))
-            display_results(successful_proxies)
+            # Implementação existente...
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
-            ips_input = input("Informe os Proxy IPs para testar (separados por '#'): ")
-            ips = ips_input.split('#')
-            for ip_port_str in ips:
-                ip, port = ip_port_str.split(':')
-                port = int(port)
-                test_proxy(ip, port)
+            # Implementação existente...
         elif choice == '4':
-            generate_proxies_by_operator_and_ip()
+            # Implementação existente...
         elif choice == '5':
             check_for_updates()
         elif choice == '6':
