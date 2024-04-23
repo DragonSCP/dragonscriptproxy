@@ -14,7 +14,6 @@ warnings.simplefilter('ignore', InsecureRequestWarning)
 # Versão atualizada da script
 __version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
-operator_ips = {}  # Dicionário para armazenar IPs de operadoras
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -46,21 +45,6 @@ def fetch_payload_data():
         print(f"Erro ao decodificar JSON: {e}")
     except Exception as e:
         print(f"Erro ao buscar dados de payload: {e}")
-
-def fetch_operator_ips():
-    url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/IPs_Operadoras.json"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            global operator_ips
-            operator_ips = json.loads(response.text)
-            print("Dados das operadoras atualizados com sucesso.")
-        else:
-            print("Falha ao atualizar dados das operadoras, status code:", response.status_code)
-    except json.JSONDecodeError as e:
-        print(f"Erro ao decodificar JSON: {e}")
-    except Exception as e:
-        print(f"Erro ao buscar dados das operadoras: {e}")
 
 def generate_payloads():
     fetch_payload_data()
@@ -124,6 +108,36 @@ def test_individual_proxy():
     input("Pressione Enter para continuar...")
     clear_screen()
 
+def test_proxies_by_operator_and_ip():
+    operator = input("Insira o nome da operadora para gerar proxies: ")
+    base_ip = input("Insira o IP base para geração: ")
+    # Suposição: geração de IPs baseados em algum algoritmo ou range específico
+    generated_ips = [f"{base_ip[:-1]}{i}" for i in range(1, 11)]  # Gera IPs com base em base_ip
+    ports = [80, 8080, 443]
+
+    print(f"Testando proxies para a operadora {operator}, por favor aguarde...")
+    proxy_results = {}
+
+    for ip in generated_ips:
+        successful_ports = []
+        for port in ports:
+            result, external_ip = test_proxy(ip, port)
+            if result:
+                if port not in successful_ports:
+                    successful_ports.append(port)
+        if successful_ports:
+            proxy_results[ip] = {'external_ip': external_ip, 'ports': sorted(successful_ports)}
+
+    if proxy_results:
+        print(f"\nProxies que funcionaram para a operadora {operator}:")
+        for ip, details in proxy_results.items():
+            print(f"{ip}\nIP Externo: {details['external_ip']}\nPortas que pegaram: {', '.join(map(str, details['ports']))}")
+    else:
+        print(f"\nNenhum proxy funcionou para a operadora {operator}. Tente outros IPs.")
+
+    input("Pressione Enter para continuar...")
+    clear_screen()
+
 def main():
     clear_screen()
     while True:
@@ -145,9 +159,7 @@ def main():
         elif choice == '3':
             test_individual_proxy()
         elif choice == '4':
-            fetch_operator_ips()  # Nova funcionalidade para carregar IPs por operadora
-            # Lógica adicional para teste de proxies por operadora
-            pass
+            test_proxies_by_operator_and_ip()
         elif choice == '5':
             update_script()
         else:
