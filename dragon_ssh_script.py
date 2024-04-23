@@ -12,7 +12,7 @@ import json  # Para processamento de JSON
 warnings.simplefilter('ignore', InsecureRequestWarning)
 
 # Versão atual da script
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 payload_data = {}  # Define payload_data globalmente para evitar NameError
 
 def clear_screen():
