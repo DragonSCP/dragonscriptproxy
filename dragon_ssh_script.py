@@ -32,7 +32,7 @@ def test_proxy(ip, port):
         return False, None
 
 def fetch_payload_data():
-    url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/payload_config.json"
+    url = "data/payload_config.json"
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -73,7 +73,7 @@ def generate_payloads():
     clear_screen()
 
 def update_script():
-    script_url = "https://raw.githubusercontent.com/DragonSCP/dragonscriptproxy/main/dragon_ssh_script.py"
+    script_url = "data/IPs_Operadoras.json"
     local_script_path = "dragon_ssh_script.py"
     remote_script_content = requests.get(script_url).text
     with open(local_script_path, 'w') as file:
