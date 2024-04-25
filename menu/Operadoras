@@ -1,1 +1,26 @@
+def test_proxy_configuration(proxy_config, operator_ips):
+    results = {}
+    proxies = proxy_config['ProxyIP'].split('#')
+    ports = proxy_config['ProxyPort'].split('#')
+    payloads = proxy_config['Payload'].split('#') if proxy_config['Payload'] else ['']
+
+    for proxy in proxies:
+        for port in ports:
+            proxy_url = f"http://{proxy}:{port}"
+            proxy_dict = {'http': proxy_url, 'https': proxy_url}
+            for payload in payloads:
+                for operator, ips in operator_ips.items():
+                    if operator == proxy_config['FLAG']:
+                        key = f"{operator.upper()} Porta {port} Proxy {proxy} Payload {payload}"
+                        results[key] = []
+                        for op_ip in ips:
+                            try:
+                                url = f"http://{op_ip}"
+                                if payload:
+                                    url += f"?{payload}"
+                                response = requests.get(url, proxies=proxy_dict, timeout=5)
+                                results[key].append((op_ip, 'Sucesso' if response.status_code == 200 else 'Falha'))
+                            except requests.exceptions.RequestException:
+                                results[key].append((op_ip, 'Falha'))
+    return results
 
