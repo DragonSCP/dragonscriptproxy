@@ -1,0 +1,8 @@
+"Name": "",
+                "FLAG": selected_operator,
+                "Payload": input("Digite as Payloads separadas por # (ou deixe em branco): ") if test_choice == '2' else "",
+                "SNI": "",
+                "TlsIP": "",
+                "ProxyIP": input("Digite os IPs do proxy separados por # (ou um único): "),
+                "ProxyPort": input("Digite as portas separadas por # (ex: 80#8080#443): "),
+                "Info": "Proxy"
