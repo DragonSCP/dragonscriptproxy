@@ -1,0 +1,59 @@
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import warnings
+
+# Ignorar avisos de certificados não verificados
+warnings.simplefilter('ignore', InsecureRequestWarning)
+
+def test_proxy(ip, port):
+    """Testa um proxy específico e retorna se é válido, e o IP externo correspondente."""
+    proxy_url = f"http://{ip}:{port}" if port in [80, 8080] else f"https://{ip}:{port}"
+    proxy_dict = {'http': proxy_url, 'https': proxy_url}
+    try:
+        response = requests.get('http://icanhazip.com', proxies=proxy_dict, timeout=5, verify=False)
+        if response.status_code == 200:
+            external_ip = response.text.strip()
+            return True, external_ip
+        else:
+            return False, None
+    except requests.exceptions.RequestException:
+        return False, None
+
+def generate_and_test_proxies_from_base_ip():
+    """Gera e testa uma lista de proxies baseados em um IP inicial e um intervalo de portas."""
+    base_ip = input("Insira o IP base (ex: 192.168.1.1): ")
+    try:
+        base_parts = base_ip.split('.')
+        if len(base_parts) != 4:
+            raise ValueError("Formato de IP inválido.")
+        base_prefix = '.'.join(base_parts[:-1])
+        start_range = int(input("Digite o início do intervalo do último octeto (ex: 50): "))
+        end_range = int(input("Digite o fim do intervalo do último octeto (ex: 100): "))
+        if start_range < 0 or end_range > 255 or start_range > end_range:
+            raise ValueError("Intervalo inválido.")
+    except ValueError as e:
+        print(f"Erro: {e}")
+        return
+
+    ports = [80, 8080, 443]
+    successful_proxies = []
+
+    print("Gerando e testando proxies...")
+    for i in range(start_range, end_range + 1):
+        ip = f"{base_prefix}.{i}"
+        for port in ports:
+            result, external_ip = test_proxy(ip, port)
+            if result:
+                successful_proxies.append((ip, port, external_ip))
+                break  # Se um port funciona, não testa os outros para o mesmo IP.
+
+    if successful_proxies:
+        print("\nProxies que funcionaram:")
+        for ip, port, external_ip in successful_proxies:
+            print(f"{ip}:{port} - IP Externo: {external_ip}")
+    else:
+        print("\nNenhum proxy funcionou com as configurações fornecidas.")
+
+    input("Pressione Enter para continuar...")
+
+# Pode-se adicionar mais funcionalidades ou configurações conforme necessário
