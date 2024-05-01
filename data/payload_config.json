@@ -24,7 +24,15 @@
         "HEAD /info HTTP/1.1[crlf]Host: info.example.com[crlf][crlf]",
         "PUT /update-profile HTTP/1.1[crlf]Host: myprofile.com[crlf]Content-Type: application/json[crlf][crlf]{\"data\":\"updated data\"}",
         "TRACE / HTTP/1.1[crlf]Host: trace.example.com[crlf][crlf]",
-        "OPTIONS /api/options HTTP/1.1[crlf]Host: options-site.com[crlf]Allow: OPTIONS, GET, POST[crlf][crlf]"
+        "OPTIONS /api/options HTTP/1.1[crlf]Host: options-site.com[crlf]Allow: OPTIONS, GET, POST[crlf][crlf]",
+        "[delay_split][lf]GET / HTTP/1.1[lf]Host: vivo.com.br[lf]",
+        "ACL HTTP/1.1 Host: plus.google.com[crlf][crlf]",
+        "[delay_split][lf]GET / HTTP/1.1[lf]Host: portal.vivo.com.br\\n\\n\\n \\n",
+        "[delay_split][lf]ACL / HTTP/1.1 Websocket [lf]Host: [rotate= portal.vivo.com.br;portalrecarga.vivo.com.br/recarga/home/;meuplano.tim.com.br;www.vivo.com.br;buzzfeed.com;mobile.adobe.com;1.0.0.5;1.1.1.1;buzzfeed.com;myspace.com;mobile.google.com;1.0.0.5;spotify.com;pagamentonline.emis.co.ao;playwaze.com;wazer.com;soundwaze.com;escolas.playwaze.com;www.wazeunlimited.com;bucs.playwaze.com;ftp.chillwaze.com;unpkg.com;c6bank.com.br;helpypro.stoodi.com.br;atendimento.lojadointer.com.br;creatorsupport.deezer.com:80;itsupport.surveymonkey.com;linefriendshelp.zendesk.com;vivo.interflashplusvpnpro.cloud;m2.interflashplusvpnpro.cloud][crlf][crlf]",
+        "[split][lf]ACL / [auth][lf][lf]",
+        "[delay_split][lf]GET / HTTP/1.1[lf]Host: xnxx.com[lf]",
+        "[delay_split]BCOPY / [crlf][crlf]",
+        "[delay_split]ACL /Set-Cookie: sessionID=fbafa6258966f49f252b404ab9e5c219; path=/admin; domain=revive.vivointernetgratis.com.br; secure; HttpOnly; SameSite=strict HTTP/1.1][lf]"
     ],
     "domains": [
         "wikipedia.org/about",
