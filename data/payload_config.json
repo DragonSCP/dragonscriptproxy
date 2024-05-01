@@ -1,10 +1,47 @@
 {
-  "custom_request": {
-    "method": "MOVE",
-    "protocol": "HTTP/1.1",
-    "headers": {
-      "X-Online-Host": "sonicnetwork.online",
-      "X-Forward-Host": [
+    "methods": [
+        "GET",
+        "HEAD",
+        "POST",
+        "PUT",
+        "DELETE",
+        "CONNECT",
+        "OPTIONS",
+        "TRACE",
+        "PATCH",
+        "LINK",
+        "UNLINK"
+    ],
+    "custom_strings": [
+        "http/ \n\n",
+        "°#http/ \n\n/",
+        "CONNECT [host]:[port] HTTP/1.1[crlf]GET /path HTTP/1.1[crlf]Host: [host][crlf][crlf]",
+        "GET / HTTP/1.1[crlf]Host: vulnerable-website.com[crlf]X-Test: injection[crlf][crlf]",
+        "POST /login HTTP/1.1[crlf]Host: secure-site.com[crlf]Content-Length: 27[crlf]Content-Type: application/x-www-form-urlencoded[crlf][crlf]username=admin&password=admin",
+        "GET /redirect HTTP/1.1[crlf]Host: redirect-example.com[crlf][crlf]",
+        "POST /api/data HTTP/1.1[crlf]Host: api.example.com[crlf]Content-Type: application/json[crlf]Authorization: Bearer youraccesstokenhere[crlf][crlf]{\"data\":\"value\"}",
+        "MOVE / HTTP/1.1[crlf]X-Online-Host: seu domínio[crlf]X-Forward-Host: [host][crlf]Upgrade: websocket[crlf]PCVPN / HTTP/1.1[lf]Host: [lf]Upgrade: websocket[lf][lf]",
+        "HEAD /info HTTP/1.1[crlf]Host: info.example.com[crlf][crlf]",
+        "PUT /update-profile HTTP/1.1[crlf]Host: myprofile.com[crlf]Content-Type: application/json[crlf]Authorization: Bearer youraccesstokenhere[crlf][crlf]{\"name\":\"John Doe\",\"email\":\"john@example.com\"}",
+        "TRACE / HTTP/1.1[crlf]Host: trace.example.com[crlf][crlf]",
+        "OPTIONS /api/options HTTP/1.1[crlf]Host: options-site.com[crlf]Allow: OPTIONS, GET, POST[crlf][crlf]"
+    ],
+    "domains": [
+        "wikipedia.org/about",
+        "youtube.com/about",
+        "google.com/",
+        "bing.com/search",
+        "facebook.com/about",
+        "twitter.com/about",
+        "amazon.com/prime",
+        "support.google.com",
+        "developer.mozilla.org",
+        "cloud.amazon.com",
+        "netflix.com/browse",
+        "linkedin.com/feed",
+        "instagram.com/explore",
+        "reddit.com/r/popular",
+        "twitch.tv/browse",
         "m.facebook.com",
         "m.youtube.com",
         "c.whatsapp.net",
@@ -44,17 +81,5 @@
         "fast.com",
         "bein.com",
         "Amazon.com"
-      ],
-      "Upgrade": "websocket"
-    },
-    "end_points": {
-      "PCVPN": {
-        "protocol": "HTTP/1.1",
-        "host": "",
-        "headers": {
-          "Upgrade": "websocket"
-        }
-      }
-    }
-  }
+    ]
 }
