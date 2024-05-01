@@ -56,18 +56,17 @@ def generate_payloads():
         print("Entrada inválida, por favor insira um número inteiro.")
         return
 
-    if "custom_request" in payload_data:
-        custom_request = payload_data["custom_request"]
-        method = custom_request.get("method", "GET")
-        protocol = custom_request.get("protocol", "HTTP/1.1")
-        headers = custom_request.get("headers", {})
-        header_string = "\n".join(f"{k}: {v if isinstance(v, str) else ', '.join(v)}" for k, v in headers.items())
-        
-        for i in range(1, num_payloads + 1):
-            payload = f"{method} {protocol}\n{header_string}"
-            print(f"Payload {i}\n{payload}\n")
-    else:
-        print("Formato de payload não suportado.")
+    methods = payload_data.get('methods', [])
+    custom_strings = payload_data.get('custom_strings', [])
+    domains = payload_data.get('domains', [])
+
+    for i in range(1, num_payloads + 1):
+        method = random.choice(methods) if methods else "GET"
+        custom_string = random.choice(custom_strings) if custom_strings else "HTTP/1.1"
+        domain = random.choice(domains) if domains else "example.com"
+        # Montando a payload de acordo com o formato especificado
+        payload = f"{method} / HTTP/1.1[crlf]Host: {domain}[crlf]{custom_string}[crlf]"
+        print(f"Payload {i}\n{payload}\n")
 
     input("Pressione Enter para continuar...")
     clear_screen()
@@ -84,8 +83,7 @@ def test_individual_proxy():
         for port in ports:
             result, external_ip = test_proxy(ip, port)
             if result:
-                if port not in successful_ports:
-                    successful_ports.append(port)
+                successful_ports.append(port)
         if successful_ports:
             proxy_results[ip] = {'external_ip': external_ip, 'ports': sorted(successful_ports)}
 
@@ -98,7 +96,6 @@ def test_individual_proxy():
 
     input("Pressione Enter para continuar...")
     clear_screen()
-
 def main():
     clear_screen()
     while True:
@@ -111,8 +108,8 @@ def main():
         if choice == '':
             break
         elif choice == '1':
-            # Lógica para Gerar e Testar Proxies a partir de um IP Base
-            pass
+            # A função para gerar e testar proxies a partir de um IP base ainda precisa ser implementada.
+            print("Esta funcionalidade ainda não foi implementada.")
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
