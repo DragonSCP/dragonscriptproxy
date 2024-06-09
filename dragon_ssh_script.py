@@ -60,13 +60,17 @@ def generate_payloads():
     custom_strings = payload_data.get('custom_strings', [])
     domains = payload_data.get('domains', [])
 
-    for i in range(1, num_payloads + 1):
+    payloads = []
+    for i in range(num_payloads):
         method = random.choice(methods) if methods else "GET"
         custom_string = random.choice(custom_strings) if custom_strings else "HTTP/1.1"
         domain = random.choice(domains) if domains else "example.com"
         # Montando a payload de acordo com o formato especificado
         payload = f"{method} / HTTP/1.1[crlf]Host: {domain}[crlf]{custom_string}[crlf]"
-        print(f"Payload {i}\n{payload}\n")
+        payloads.append(payload)
+
+    # Imprimir as payloads
+    print("#".join(payloads))
 
     input("Pressione Enter para continuar...")
     clear_screen()
