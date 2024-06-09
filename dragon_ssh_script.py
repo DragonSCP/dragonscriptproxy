@@ -96,6 +96,34 @@ def test_individual_proxy():
 
     input("Pressione Enter para continuar...")
     clear_screen()
+
+def generate_and_test_proxies():
+    base_ip = input("Insira o IP base para gerar e testar os proxies: ")
+    num_proxies = int(input("Quantos proxies deseja gerar e testar? "))
+    ports = [80, 8080, 443]
+    proxy_results = {}
+
+    print("Gerando e testando proxies, por favor aguarde...")
+    for _ in range(num_proxies):
+        ip = ".".join(base_ip.split('.')[:3]) + "." + str(random.randint(1, 255))
+        successful_ports = []
+        for port in ports:
+            result, external_ip = test_proxy(ip, port)
+            if result:
+                successful_ports.append(port)
+        if successful_ports:
+            proxy_results[ip] = {'external_ip': external_ip, 'ports': sorted(successful_ports)}
+
+    if proxy_results:
+        print("\nProxies que funcionaram:")
+        for ip, details in proxy_results.items():
+            print(f"{ip}\nIP Externo: {details['external_ip']}\nPortas que pegaram: {', '.join(map(str, details['ports']))}")
+    else:
+        print("\nNenhum proxy funcionou. Tente novamente.")
+
+    input("Pressione Enter para continuar...")
+    clear_screen()
+
 def main():
     clear_screen()
     while True:
@@ -108,8 +136,7 @@ def main():
         if choice == '':
             break
         elif choice == '1':
-            # A função para gerar e testar proxies a partir de um IP base ainda precisa ser implementada.
-            print("Esta funcionalidade ainda não foi implementada.")
+            generate_and_test_proxies()
         elif choice == '2':
             generate_payloads()
         elif choice == '3':
@@ -121,3 +148,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
